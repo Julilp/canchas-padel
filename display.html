@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,11 @@
             --aviso-bg: var(--primario);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background: var(--fondo);
@@ -34,11 +39,21 @@
             flex-direction: column;
             animation: fadeIn 0.6s ease;
         }
-        .slide.active { display: flex; }
+
+        .slide.active {
+            display: flex;
+        }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ── HEADER ── */
@@ -77,6 +92,7 @@
             line-height: 1;
             letter-spacing: 1px;
         }
+
         .logo-club span {
             color: #555;
             font-size: 17px;
@@ -99,12 +115,15 @@
             transform: translateX(-50%);
             z-index: 10;
         }
+
         .dot {
-            width: 8px; height: 8px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--borde);
             transition: all 0.3s;
         }
+
         .dot.on {
             background: var(--primario);
             width: 24px;
@@ -133,18 +152,22 @@
             overflow: hidden;
             transition: border-color 0.3s;
         }
+
         .card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0;
-            width: 4px; height: 100%;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
             background: var(--primario);
             opacity: 0.4;
         }
 
         .tag {
             position: absolute;
-            top: 14px; left: 24px;
+            top: 14px;
+            left: 24px;
             font-size: 16px;
             font-weight: 800;
             color: var(--primario);
@@ -179,114 +202,139 @@
             background: var(--primario);
             border: none;
         }
-        .card.aviso::before { display: none; }
-        .card.aviso .tag { color: #000; background: rgba(0,0,0,0.12); }
-        .card.aviso .jugador { color: #000; font-size: 34px; }
+
+        .card.aviso::before {
+            display: none;
+        }
+
+        .card.aviso .tag {
+            color: #000;
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        .card.aviso .jugador {
+            color: #000;
+            font-size: 34px;
+        }
     </style>
 </head>
+
 <body>
 
-<div id="app">
-    <div class="slide active"><div class="header" id="h1"></div><div class="grid" id="g1"></div></div>
-    <div class="slide"><div class="header" id="h2"></div><div class="grid" id="g2"></div></div>
-    <div class="slide"><div class="header" id="h3"></div><div class="grid" id="g3"></div></div>
-    <div class="slide"><div class="header" id="h4"></div><div class="grid" id="g4"></div></div>
-</div>
+    <div id="app">
+        <div class="slide active">
+            <div class="header" id="h1"></div>
+            <div class="grid" id="g1"></div>
+        </div>
+        <div class="slide">
+            <div class="header" id="h2"></div>
+            <div class="grid" id="g2"></div>
+        </div>
+        <div class="slide">
+            <div class="header" id="h3"></div>
+            <div class="grid" id="g3"></div>
+        </div>
+        <div class="slide">
+            <div class="header" id="h4"></div>
+            <div class="grid" id="g4"></div>
+        </div>
+    </div>
 
-<div class="slide-indicator" id="dots"></div>
+    <div class="slide-indicator" id="dots"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    // ══════════════════════════════════════════
-    //  CONFIGURAR ESTAS DOS LÍNEAS
-    // ══════════════════════════════════════════
-    const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
-    const SUPABASE_KEY = 'tu-anon-key-publica';
-    // ══════════════════════════════════════════
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ══════════════════════════════════════════
+        //  CONFIGURAR ESTAS DOS LÍNEAS
+        // ══════════════════════════════════════════
+        const SUPABASE_URL = 'https://wcjwjkwfztebxsujtngk.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indjandqa3dmenRlYnhzdWp0bmdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMTk0MDUsImV4cCI6MjA4OTU5NTQwNX0.6R9gzZZhzV_KgIVHvZU_Q2d8QBNIsIcCJXHYtUSrjqc';
+        // ══════════════════════════════════════════
 
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let config = { organizador: 'WPE PADEL', club_nombre: 'GRAN WILLY', club_subtitulo: 'PADEL CLUB' };
-    let partidos = [];
-    let cur = 0;
+        let config = { organizador: 'WPE PADEL', club_nombre: 'GRAN WILLY', club_subtitulo: 'PADEL CLUB' };
+        let partidos = [];
+        let cur = 0;
 
-    // ── Header ──
-    function renderHeader() {
-        const html = `
+        // ── Header ──
+        function renderHeader() {
+            const html = `
             <div class="logos-container">
                 <div class="logo-organizador">${config.organizador}</div>
                 <div class="logo-separador"></div>
                 <div class="logo-club">${config.club_nombre}<br><span>${config.club_subtitulo}</span></div>
             </div>
             <div class="reloj">00:00</div>`;
-        document.querySelectorAll('.header').forEach(h => h.innerHTML = html);
-    }
+            document.querySelectorAll('.header').forEach(h => h.innerHTML = html);
+        }
 
-    // ── Cards ──
-    function renderCard(p) {
-        if (!p) return `<div class="card"><div class="tag">---</div><div class="jugador">---</div><div class="categoria"></div></div>`;
-        const cls = p.es_aviso ? 'card aviso' : 'card';
-        return `<div class="${cls}">
+        // ── Cards ──
+        function renderCard(p) {
+            if (!p) return `<div class="card"><div class="tag">---</div><div class="jugador">---</div><div class="categoria"></div></div>`;
+            const cls = p.es_aviso ? 'card aviso' : 'card';
+            return `<div class="${cls}">
             <div class="tag">${p.tag || '---'}</div>
             <div class="jugador">${p.jugador || '---'}</div>
             ${!p.es_aviso ? `<div class="categoria">${p.categoria || ''}</div>` : ''}
         </div>`;
-    }
-
-    function renderAll() {
-        const sorted = [...partidos].sort((a, b) => a.slot - b.slot);
-        // Pad to 16
-        while (sorted.length < 16) sorted.push(null);
-
-        for (let i = 0; i < 4; i++) {
-            const g = document.getElementById(`g${i + 1}`);
-            const chunk = sorted.slice(i * 4, i * 4 + 4);
-            g.innerHTML = chunk.map(renderCard).join('');
         }
-    }
 
-    // ── Dots ──
-    function renderDots() {
-        document.getElementById('dots').innerHTML = [0,1,2,3].map(i =>
-            `<div class="dot ${i === cur ? 'on' : ''}"></div>`
-        ).join('');
-    }
+        function renderAll() {
+            const sorted = [...partidos].sort((a, b) => a.slot - b.slot);
+            // Pad to 16
+            while (sorted.length < 16) sorted.push(null);
 
-    // ── Slide rotation ──
-    setInterval(() => {
-        const ss = document.querySelectorAll('.slide');
-        ss.forEach(s => s.classList.remove('active'));
-        cur = (cur + 1) % 4;
-        ss[cur].classList.add('active');
-        renderDots();
-    }, 10000);
+            for (let i = 0; i < 4; i++) {
+                const g = document.getElementById(`g${i + 1}`);
+                const chunk = sorted.slice(i * 4, i * 4 + 4);
+                g.innerHTML = chunk.map(renderCard).join('');
+            }
+        }
 
-    // ── Clock ──
-    setInterval(() => {
-        const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        document.querySelectorAll('.reloj').forEach(r => r.textContent = t);
-    }, 1000);
+        // ── Dots ──
+        function renderDots() {
+            document.getElementById('dots').innerHTML = [0, 1, 2, 3].map(i =>
+                `<div class="dot ${i === cur ? 'on' : ''}"></div>`
+            ).join('');
+        }
 
-    // ── Load data ──
-    async function loadConfig() {
-        const { data } = await sb.from('config').select('*').eq('id', 1).single();
-        if (data) { config = data; renderHeader(); }
-    }
+        // ── Slide rotation ──
+        setInterval(() => {
+            const ss = document.querySelectorAll('.slide');
+            ss.forEach(s => s.classList.remove('active'));
+            cur = (cur + 1) % 4;
+            ss[cur].classList.add('active');
+            renderDots();
+        }, 10000);
 
-    async function loadPartidos() {
-        const { data } = await sb.from('partidos').select('*').order('slot');
-        if (data) { partidos = data; renderAll(); }
-    }
+        // ── Clock ──
+        setInterval(() => {
+            const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.querySelectorAll('.reloj').forEach(r => r.textContent = t);
+        }, 1000);
 
-    // ── Realtime subscriptions ──
-    sb.channel('display')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'partidos' }, () => loadPartidos())
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, () => loadConfig())
-        .subscribe();
+        // ── Load data ──
+        async function loadConfig() {
+            const { data } = await sb.from('config').select('*').eq('id', 1).single();
+            if (data) { config = data; renderHeader(); }
+        }
 
-    // ── Init ──
-    loadConfig().then(() => { renderHeader(); renderDots(); });
-    loadPartidos();
-</script>
+        async function loadPartidos() {
+            const { data } = await sb.from('partidos').select('*').order('slot');
+            if (data) { partidos = data; renderAll(); }
+        }
+
+        // ── Realtime subscriptions ──
+        sb.channel('display')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'partidos' }, () => loadPartidos())
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, () => loadConfig())
+            .subscribe();
+
+        // ── Init ──
+        loadConfig().then(() => { renderHeader(); renderDots(); });
+        loadPartidos();
+    </script>
 </body>
+
 </html>
