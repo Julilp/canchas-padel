@@ -412,21 +412,83 @@
 
         /* ── RESPONSIVE ── */
         @media (max-width: 700px) {
-            .slot-row {
-                grid-template-columns: 40px 1fr 1fr;
+
+            /* Topbar */
+            .topbar {
+                padding: 12px 16px;
+                flex-wrap: wrap;
                 gap: 8px;
             }
 
-            .slot-row .slot-input:nth-child(4) {
-                grid-column: 2 / -1;
+            .topbar-brand {
+                font-size: 20px;
             }
 
-            .content {
-                padding: 16px;
+            .topbar-user {
+                display: none;
             }
 
+            /* Tabs */
             .tabs {
-                padding: 0 16px;
+                padding: 0 12px;
+            }
+
+            .tab {
+                padding: 12px 16px;
+                font-size: 12px;
+            }
+
+            /* Content */
+            .content {
+                padding: 14px;
+            }
+
+            .section-title {
+                font-size: 17px;
+                margin-bottom: 14px;
+            }
+
+            /* Slot rows → stacked cards */
+            .slot-row {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                padding: 14px;
+            }
+
+            .slot-num {
+                font-size: 18px;
+                text-align: left;
+                color: var(--primario);
+            }
+
+            .slot-input {
+                width: 100%;
+                font-size: 15px;
+                padding: 12px 14px;
+            }
+
+            .aviso-toggle {
+                justify-content: flex-start;
+                gap: 10px;
+            }
+
+            .save-dot {
+                margin: 0;
+            }
+
+            /* Config form */
+            .config-form {
+                grid-template-columns: 1fr;
+            }
+
+            /* Login */
+            .login-box {
+                padding: 32px 24px;
+            }
+
+            .login-logo {
+                font-size: 30px;
             }
         }
 
