@@ -105,6 +105,40 @@
             color: var(--primario);
         }
 
+        /* ── PAUSE/PLAY BUTTON ── */
+        .btn-toggle {
+            position: fixed;
+            top: 22px;
+            right: 180px;
+            z-index: 20;
+            background: rgba(204, 255, 0, 0.1);
+            border: 2px solid var(--primario);
+            color: var(--primario);
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.25s, transform 0.15s;
+        }
+
+        .btn-toggle:hover {
+            background: rgba(204, 255, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        .btn-toggle svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--primario);
+        }
+
         /* ── SLIDE INDICATOR ── */
         .slide-indicator {
             display: flex;
@@ -240,6 +274,18 @@
         </div>
     </div>
 
+    <!-- Pause / Play toggle -->
+    <button class="btn-toggle" id="btnToggle" title="Pausar / Reanudar rotación automática">
+        <svg id="iconPause" viewBox="0 0 24 24">
+            <rect x="6" y="4" width="4" height="16" />
+            <rect x="14" y="4" width="4" height="16" />
+        </svg>
+        <svg id="iconPlay" viewBox="0 0 24 24" style="display:none">
+            <polygon points="6,4 20,12 6,20" />
+        </svg>
+        <span id="btnLabel">Auto</span>
+    </button>
+
     <div class="slide-indicator" id="dots"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -299,14 +345,53 @@
             ).join('');
         }
 
-        // ── Slide rotation ──
-        setInterval(() => {
+        // ── Slide helpers ──
+        function goToSlide(index) {
             const ss = document.querySelectorAll('.slide');
             ss.forEach(s => s.classList.remove('active'));
-            cur = (cur + 1) % 4;
+            cur = ((index % 4) + 4) % 4; // wrap
             ss[cur].classList.add('active');
             renderDots();
-        }, 10000);
+        }
+
+        // ── Auto rotation (controllable) ──
+        let autoPlay = true;
+        let rotationTimer = setInterval(nextSlide, 10000);
+
+        function nextSlide() {
+            goToSlide(cur + 1);
+        }
+
+        // ── Toggle button logic ──
+        const btnToggle = document.getElementById('btnToggle');
+        const iconPause = document.getElementById('iconPause');
+        const iconPlay = document.getElementById('iconPlay');
+        const btnLabel = document.getElementById('btnLabel');
+
+        btnToggle.addEventListener('click', () => {
+            autoPlay = !autoPlay;
+            if (autoPlay) {
+                // Resume auto rotation
+                rotationTimer = setInterval(nextSlide, 10000);
+                iconPause.style.display = '';
+                iconPlay.style.display = 'none';
+                btnLabel.textContent = 'Auto';
+            } else {
+                // Pause
+                clearInterval(rotationTimer);
+                iconPause.style.display = 'none';
+                iconPlay.style.display = '';
+                btnLabel.textContent = 'Manual';
+            }
+        });
+
+        // ── Mouse‑wheel navigation (works only when paused) ──
+        window.addEventListener('wheel', (e) => {
+            if (autoPlay) return;
+            e.preventDefault();
+            if (e.deltaY > 0) goToSlide(cur + 1);
+            else goToSlide(cur - 1);
+        }, { passive: false });
 
         // ── Clock ──
         setInterval(() => {
