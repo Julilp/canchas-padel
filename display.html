@@ -403,6 +403,25 @@
             else goToSlide(cur - 1);
         }, { passive: false });
 
+        // ── Swipe horizontal en móvil (solo en modo manual) ──
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        window.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        window.addEventListener('touchend', (e) => {
+            if (autoPlay) return;
+            const dx = e.changedTouches[0].screenX - touchStartX;
+            const dy = e.changedTouches[0].screenY - touchStartY;
+            // Solo swipe horizontal (ignorar swipe vertical)
+            if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+            if (dx < 0) goToSlide(cur + 1);  // swipe izquierda → siguiente
+            else goToSlide(cur - 1);          // swipe derecha → anterior
+        }, { passive: true });
+
         // ── Clock ──
         setInterval(() => {
             const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
