@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATCHVIEW - PANTALLA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;800&display=swap');
+
+        :root {
+            --primario: #ccff00;
+            --fondo: #050505;
+            --card-bg: #0d0d0d;
+            --borde: #1a1a1a;
+            --aviso-bg: var(--primario);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--fondo);
+            color: #fff;
+            font-family: 'Barlow Condensed', sans-serif;
+            text-transform: uppercase;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* ── SLIDE SYSTEM ── */
+        .slide {
+            display: none;
+            height: 100vh;
+            padding: 24px;
+            flex-direction: column;
+            animation: fadeIn 0.6s ease;
+        }
+        .slide.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── HEADER ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 18px;
+            margin-bottom: 18px;
+            border-bottom: 4px solid var(--primario);
+        }
+
+        .logos-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-organizador {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 44px;
+            color: var(--primario);
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+
+        .logo-separador {
+            width: 3px;
+            height: 44px;
+            background: var(--borde);
+        }
+
+        .logo-club {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            line-height: 1;
+            letter-spacing: 1px;
+        }
+        .logo-club span {
+            color: #555;
+            font-size: 17px;
+        }
+
+        .reloj {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            letter-spacing: 2px;
+            color: var(--primario);
+        }
+
+        /* ── SLIDE INDICATOR ── */
+        .slide-indicator {
+            display: flex;
+            gap: 6px;
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--borde);
+            transition: all 0.3s;
+        }
+        .dot.on {
+            background: var(--primario);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* ── GRID ── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 16px;
+            flex-grow: 1;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 28px 28px 20px;
+            border: 1px solid var(--borde);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--primario);
+            opacity: 0.4;
+        }
+
+        .tag {
+            position: absolute;
+            top: 14px; left: 24px;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primario);
+            background: rgba(204, 255, 0, 0.08);
+            padding: 2px 12px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .jugador {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 42px;
+            line-height: 1.05;
+            margin-top: 18px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            letter-spacing: 1px;
+        }
+
+        .categoria {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primario);
+            text-align: right;
+            margin-top: auto;
+            letter-spacing: 2px;
+        }
+
+        /* ── AVISO ── */
+        .card.aviso {
+            background: var(--primario);
+            border: none;
+        }
+        .card.aviso::before { display: none; }
+        .card.aviso .tag { color: #000; background: rgba(0,0,0,0.12); }
+        .card.aviso .jugador { color: #000; font-size: 34px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="slide active"><div class="header" id="h1"></div><div class="grid" id="g1"></div></div>
+    <div class="slide"><div class="header" id="h2"></div><div class="grid" id="g2"></div></div>
+    <div class="slide"><div class="header" id="h3"></div><div class="grid" id="g3"></div></div>
+    <div class="slide"><div class="header" id="h4"></div><div class="grid" id="g4"></div></div>
+</div>
+
+<div class="slide-indicator" id="dots"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // ══════════════════════════════════════════
+    //  CONFIGURAR ESTAS DOS LÍNEAS
+    // ══════════════════════════════════════════
+    const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+    const SUPABASE_KEY = 'tu-anon-key-publica';
+    // ══════════════════════════════════════════
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let config = { organizador: 'WPE PADEL', club_nombre: 'GRAN WILLY', club_subtitulo: 'PADEL CLUB' };
+    let partidos = [];
+    let cur = 0;
+
+    // ── Header ──
+    function renderHeader() {
+        const html = `
+            <div class="logos-container">
+                <div class="logo-organizador">${config.organizador}</div>
+                <div class="logo-separador"></div>
+                <div class="logo-club">${config.club_nombre}<br><span>${config.club_subtitulo}</span></div>
+            </div>
+            <div class="reloj">00:00</div>`;
+        document.querySelectorAll('.header').forEach(h => h.innerHTML = html);
+    }
+
+    // ── Cards ──
+    function renderCard(p) {
+        if (!p) return `<div class="card"><div class="tag">---</div><div class="jugador">---</div><div class="categoria"></div></div>`;
+        const cls = p.es_aviso ? 'card aviso' : 'card';
+        return `<div class="${cls}">
+            <div class="tag">${p.tag || '---'}</div>
+            <div class="jugador">${p.jugador || '---'}</div>
+            ${!p.es_aviso ? `<div class="categoria">${p.categoria || ''}</div>` : ''}
+        </div>`;
+    }
+
+    function renderAll() {
+        const sorted = [...partidos].sort((a, b) => a.slot - b.slot);
+        // Pad to 16
+        while (sorted.length < 16) sorted.push(null);
+
+        for (let i = 0; i < 4; i++) {
+            const g = document.getElementById(`g${i + 1}`);
+            const chunk = sorted.slice(i * 4, i * 4 + 4);
+            g.innerHTML = chunk.map(renderCard).join('');
+        }
+    }
+
+    // ── Dots ──
+    function renderDots() {
+        document.getElementById('dots').innerHTML = [0,1,2,3].map(i =>
+            `<div class="dot ${i === cur ? 'on' : ''}"></div>`
+        ).join('');
+    }
+
+    // ── Slide rotation ──
+    setInterval(() => {
+        const ss = document.querySelectorAll('.slide');
+        ss.forEach(s => s.classList.remove('active'));
+        cur = (cur + 1) % 4;
+        ss[cur].classList.add('active');
+        renderDots();
+    }, 10000);
+
+    // ── Clock ──
+    setInterval(() => {
+        const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.querySelectorAll('.reloj').forEach(r => r.textContent = t);
+    }, 1000);
+
+    // ── Load data ──
+    async function loadConfig() {
+        const { data } = await sb.from('config').select('*').eq('id', 1).single();
+        if (data) { config = data; renderHeader(); }
+    }
+
+    async function loadPartidos() {
+        const { data } = await sb.from('partidos').select('*').order('slot');
+        if (data) { partidos = data; renderAll(); }
+    }
+
+    // ── Realtime subscriptions ──
+    sb.channel('display')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'partidos' }, () => loadPartidos())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, () => loadConfig())
+        .subscribe();
+
+    // ── Init ──
+    loadConfig().then(() => { renderHeader(); renderDots(); });
+    loadPartidos();
+</script>
+</body>
+</html>
